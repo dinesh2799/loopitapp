@@ -16,7 +16,7 @@ class CarController extends Controller
             [
                 "model" => "required|unique:cars",
                 "brand" => "required",
-                "stock" => "required|numeric"
+                "stock" => "required|numeric|min:0"
             ]
         );
 
@@ -96,48 +96,50 @@ class CarController extends Controller
 
     }
 
-    public function update(Request $request, $id)
-    {
-        $validator = Validator::make($request->all(),[
-            "model" => "required",
-            "brand" => "required",
-            "stock" => "required|numeric",
-            "booked" => "numeric"
-        ]);
+   public function update(Request $request, $id)
+   {
+       $value=$request->input('stock');
+       $validator = Validator::make($request->all(),[
+           "model" => "required|unique:cars",
+           "brand" => "required",
+           "stock" => "required|numeric|min:0",
+           "booked" => "numeric|lte:$value|min:0"
+       ]);
 
-        if($validator->fails())
-        {
-            return response()->json([
-                'status'=> 422,
-                'validationErrors'=> $validator->messages(),
-            ]);
-        }
-        else
-        {
-            $car = Car::find($id);
-            if($car)
-            {
-                $car->model = $request->input('model');
-                $car->brand = $request->input('brand');
-                $car->stock = $request->input('stock');
-                $car->booked = $request->input('booked');
-                $car->available = $request->input('stock') - $request->input('booked');
-                $car->update();
+       if($validator->fails())
+       {
+           return response()->json([
+               'status'=> 422,
+               'validationErrors'=> $validator->messages(),
+           ]);
+       }
+       else
+       {
+           $car = Car::find($id);
+           if($car)
+           {
+               $car->model = $request->input('model');
+               $car->brand = $request->input('brand');
+               $car->stock = $request->input('stock');
+               $car->booked = $request->input('booked');
+               $car->available = $request->input('stock') - $request->input('booked');
 
-                return response()->json([
-                    'status'=> 200,
-                    'message'=>'Car Updated Successfully',
-                ]);
-            }
-            else
-            {
-                return response()->json([
-                    'status'=> 404,
-                    'message' => 'No Student ID Found',
-                ]);
-            }
-        }
-    }
+               $car->update();
+
+               return response()->json([
+                   'status'=> 200,
+                   'message'=>'Car Updated Successfully',
+               ]);
+           }
+           else
+           {
+               return response()->json([
+                   'status'=> 404,
+                   'message' => 'No Car ID Found',
+               ]);
+           }
+       }
+   }
 
 
     public function destroy($id)

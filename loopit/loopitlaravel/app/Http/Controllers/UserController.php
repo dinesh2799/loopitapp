@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\UserRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
@@ -10,20 +12,14 @@ class UserController extends Controller
     private $status_code = 200;
     public function register(Request $request)
     {
+
         $validate = Validator::make($request->all(),[
             "name" => "required",
-            "email" => "required|email",
+            "email" => "required|email|unique:users",
             "password" => "required",
             "phone" => "required"
         ]);
-//        if($validate->fails())
-//        {
-//            return response()->json([
-//                "status" => "failed",
-//                "message" => "validation_error",
-//                "errors" => $validate->errors()
-//            ]);
-//        }
+
         if($validate->fails()) {
             return response()->json(["status" => "failed", "validation_error" => $validate->errors()]);
         }

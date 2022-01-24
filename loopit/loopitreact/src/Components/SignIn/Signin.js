@@ -53,7 +53,9 @@ export default class Signin extends Component {
           response.data.success === undefined
         ) {
           this.setState({
-            errMsgEmail: response.data.validation_error.email,
+            // errMsgEmail: response.data.data.email,
+            // errMsgPwd: response.data.data.password,
+            errMsgEmail:response.data.validation_error.email,
             errMsgPwd: response.data.validation_error.password,
           });
           setTimeout(() => {

@@ -46,6 +46,7 @@ function EditCar(props) {
         }
 
         axios.put(`http://localhost:8000/api/update-car/${car_id}`, data).then(res=>{
+            console.log(res.data);
             if(res.data.status === 200)
             {
                 swal("Success",res.data.message,"success");
@@ -55,6 +56,11 @@ function EditCar(props) {
             else if(res.data.status === 422)
             {
                 swal("All fields are mandetory","","error");
+                setError(res.data.validationErrors);
+            }
+            else if(res.data.status === 423)
+            {
+                swal("Booked Cars cannot be greater than total cars","","error");
                 setError(res.data.validationErrors);
             }
             else if(res.data.status === 404)

@@ -100,7 +100,7 @@ class CarController extends Controller
    {
        $value=$request->input('stock');
        $validator = Validator::make($request->all(),[
-           "model" => "required|unique:cars",
+           "model" => "required",
            "brand" => "required",
            "stock" => "required|numeric|min:0",
            "booked" => "numeric|lte:$value|min:0"
